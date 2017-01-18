@@ -6,14 +6,33 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		186969E91E2FDA210090E22F /* Amadeus */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 186969EA1E2FDA210090E22F /* Build configuration list for PBXAggregateTarget "Amadeus" */;
+			buildPhases = (
+				186969ED1E2FDA320090E22F /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = Amadeus;
+			productName = Amadeus;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		186969DE1E2FD6DF0090E22F /* Cocoa.h in Headers */ = {isa = PBXBuildFile; fileRef = 186969DC1E2FD6DF0090E22F /* Cocoa.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186969E61E2FD6EE0090E22F /* Something.h in Headers */ = {isa = PBXBuildFile; fileRef = 186969E41E2FD6EE0090E22F /* Something.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186969E71E2FD6EE0090E22F /* Something.m in Sources */ = {isa = PBXBuildFile; fileRef = 186969E51E2FD6EE0090E22F /* Something.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		186969D91E2FD6DF0090E22F /* Cocoa.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Cocoa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		186969DC1E2FD6DF0090E22F /* Cocoa.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cocoa.h; sourceTree = "<group>"; };
 		186969DD1E2FD6DF0090E22F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		186969E41E2FD6EE0090E22F /* Something.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Something.h; sourceTree = "<group>"; };
+		186969E51E2FD6EE0090E22F /* Something.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Something.m; sourceTree = "<group>"; };
+		18696A2C1E2FEFB70090E22F /* Shell Script File */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Shell Script File"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,7 +66,10 @@
 			isa = PBXGroup;
 			children = (
 				186969DC1E2FD6DF0090E22F /* Cocoa.h */,
+				186969E41E2FD6EE0090E22F /* Something.h */,
+				186969E51E2FD6EE0090E22F /* Something.m */,
 				186969DD1E2FD6DF0090E22F /* Info.plist */,
+				18696A2C1E2FEFB70090E22F /* Shell Script File */,
 			);
 			path = Cocoa;
 			sourceTree = "<group>";
@@ -60,6 +82,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				186969DE1E2FD6DF0090E22F /* Cocoa.h in Headers */,
+				186969E61E2FD6EE0090E22F /* Something.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,6 +118,11 @@
 				TargetAttributes = {
 					186969D81E2FD6DF0090E22F = {
 						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = BW2JUPK3JZ;
+						ProvisioningStyle = Automatic;
+					};
+					186969E91E2FDA210090E22F = {
+						CreatedOnToolsVersion = 8.1;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -112,6 +140,7 @@
 			projectRoot = "";
 			targets = (
 				186969D81E2FD6DF0090E22F /* Cocoa */,
+				186969E91E2FDA210090E22F /* Amadeus */,
 			);
 		};
 /* End PBXProject section */
@@ -126,11 +155,28 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		186969ED1E2FDA320090E22F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "UNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/${CONFIGURATION}-universal\n\n# make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n\n# Step 1. Build Device and Simulator versions\nxcodebuild -target \"${PROJECT_NAME}\" ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphoneos  BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\nxcodebuild -target \"${PROJECT_NAME}\" -configuration ${CONFIGURATION} -sdk iphonesimulator BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\n\n# Step 2. Copy the framework structure to the universal folder\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n\n# Step 3. Create universal binary file using lipo and place the combined executable in the copied framework directory\n#!/bin/sh\n\nUNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/${CONFIGURATION}-universal\n\n# make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n\n# Step 1. Build Device and Simulator versions\nxcodebuild -target \"${PROJECT_NAME}\" ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphoneos  BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\nxcodebuild -target \"${PROJECT_NAME}\" -configuration ${CONFIGURATION} -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\n\n# Step 2. Copy the framework structure (from iphoneos build) to the universal folder\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n\n# Step 3. Copy Swift modules from iphonesimulator build (if it exists) to the copied framework directory\nSIMULATOR_SWIFT_MODULES_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule/.\"\nif [ -d \"${SIMULATOR_SWIFT_MODULES_DIR}\" ]; then\ncp -R \"${SIMULATOR_SWIFT_MODULES_DIR}\" \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule\"\nfi\n\n# Step 4. Create universal binary file using lipo and place the combined executable in the copied framework directory\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework/${PROJECT_NAME}\"\n\n# Step 5. Convenience step to copy the framework to the project's directory\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework\" \"${PROJECT_DIR}\"\n\n# Step 6. Convenience step to open the project's directory in Finder\nopen \"${PROJECT_DIR}\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		186969D41E2FD6DF0090E22F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				186969E71E2FD6EE0090E22F /* Something.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,13 +283,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = BW2JUPK3JZ;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Cocoa/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kumar.Cocoa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -255,15 +306,31 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = BW2JUPK3JZ;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Cocoa/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.kumar.Cocoa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		186969EB1E2FDA210090E22F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		186969EC1E2FDA210090E22F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -284,6 +351,14 @@
 			buildConfigurations = (
 				186969E21E2FD6DF0090E22F /* Debug */,
 				186969E31E2FD6DF0090E22F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		186969EA1E2FDA210090E22F /* Build configuration list for PBXAggregateTarget "Amadeus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				186969EB1E2FDA210090E22F /* Debug */,
+				186969EC1E2FDA210090E22F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};

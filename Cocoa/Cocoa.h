@@ -17,3 +17,4 @@ FOUNDATION_EXPORT const unsigned char CocoaVersionString[];
 // In this header, you should import all the public headers of your framework using statements like #import <Cocoa/PublicHeader.h>
 
 
+# import <Cocoa/Something.h>
